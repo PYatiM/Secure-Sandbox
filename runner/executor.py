@@ -1,3 +1,4 @@
+from limits.limiter import set_limits
 import subprocess
 import tempfile
 import os
@@ -17,7 +18,7 @@ def execute_python(code: str, timeout: int = 2):
                 capture_output=True,
                 text=True,
                 timeout=timeout,
-                preexec_fn=preexec
+                preexec_fn=set_limits
             )
 
             return {
