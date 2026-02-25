@@ -8,7 +8,7 @@ import time
 
 preexec = set_limits if os.name != "nt" else None
 def execute_python(code: str, timeout: int = 2):
-    start = time.start()
+    start = time.time()
     
     is_valid, message = validate_code(code)
 
