@@ -1,0 +1,8 @@
+FROM python:3.10-slim
+
+WORKDIR /sandbox
+
+RUN useradd -m sandboxuser
+USER sandboxuser
+
+CMD ["python3", "/sandbox/user_code.py"]
