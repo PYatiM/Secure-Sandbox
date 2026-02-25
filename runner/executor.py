@@ -1,3 +1,4 @@
+from security.validator import validate_code
 from limits.limiter import set_limits
 import subprocess
 import tempfile
@@ -6,6 +7,15 @@ import sys
 
 preexec = set_limits if os.name != "nt" else None
 def execute_python(code: str, timeout: int = 2):
+    is_valid, message = validate_code(code)
+
+    if not is_valid:
+        return {
+            "stdout": "",
+            "stderr": message,
+            "returncode": -1
+        }
+        
     with tempfile.TemporaryDirectory() as tmpdir:
         file_path = os.path.join(tmpdir, "user_code.py")
 
