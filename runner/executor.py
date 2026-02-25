@@ -4,9 +4,12 @@ import subprocess
 import tempfile
 import os
 import sys
+import time
 
 preexec = set_limits if os.name != "nt" else None
 def execute_python(code: str, timeout: int = 2):
+    start = time.start()
+    
     is_valid, message = validate_code(code)
 
     if not is_valid:
@@ -30,11 +33,13 @@ def execute_python(code: str, timeout: int = 2):
                 timeout=timeout,
                 preexec_fn=set_limits
             )
-
+            end = time.time()
+            
             return {
                 "stdout": result.stdout,
                 "stderr": result.stderr,
-                "returncode": result.returncode
+                "returncode": result.returncode,
+                "execution_time": round(end - start, 4)
             }
 
         except subprocess.TimeoutExpired:
