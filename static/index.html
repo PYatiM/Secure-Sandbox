@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Secure Sandbox</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Secure Code Execution Sandbox</h1>
+
+        <textarea id="codeInput" placeholder="Write Python code here..."></textarea>
+
+        <button onclick="runCode()">Execute</button>
+
+        <div class="output">
+            <h3>Output</h3>
+            <pre id="stdout"></pre>
+
+            <h3>Error</h3>
+            <pre id="stderr"></pre>
+
+            <h3>Metadata</h3>
+            <pre id="meta"></pre>
+        </div>
+    </div>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>

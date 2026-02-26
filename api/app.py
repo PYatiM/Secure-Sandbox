@@ -3,6 +3,8 @@ from pydantic import BaseModel
 from fastapi import Request, HTTPException
 from runner.executor import execute_python
 from collections import defaultdict
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 import time
 import asyncio
 
@@ -20,6 +22,7 @@ def is_rate_limited(client_ip):
     return False
 
 app = FastAPI()
+app.mount("/static", StaticFiles(directory="static"), name="static")
 MAX_CONCURRENT_EXECUTIONS = 2
 semaphore = asyncio.Semaphore(MAX_CONCURRENT_EXECUTIONS)
 
@@ -43,5 +46,5 @@ async def run_code(request: CodeRequest, req: Request):
         return result
 
 @app.get("/")
-def root():
-    return {"message": "Secure Sandbox API is running"}
+def serve_ui():
+    return FileResponse("static/index.html")
