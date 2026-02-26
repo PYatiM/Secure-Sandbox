@@ -41,3 +41,7 @@ async def run_code(request: CodeRequest, req: Request):
             request.code
         )
         return result
+
+@app.get("/")
+def root():
+    return {"message": "Secure Sandbox API is running"}
