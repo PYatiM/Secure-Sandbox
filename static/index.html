@@ -8,13 +8,16 @@
     <div class="container">
         <h1>Secure Code Execution Sandbox</h1>
 
-        <textarea id="codeInput" placeholder="Write Python code here..."></textarea>
+        <div id="editor" style="height:300px;"></div>
 
         <button onclick="runCode()">Execute</button>
-
+        <div id="status" class="status idle">Idle</div>
         <div class="output">
             <h3>Output</h3>
             <pre id="stdout"></pre>
+
+            <h3>Execution History</h3>
+            <ul id="history"></ul>
 
             <h3>Error</h3>
             <pre id="stderr"></pre>
@@ -23,7 +26,9 @@
             <pre id="meta"></pre>
         </div>
     </div>
-
+    
+    <script src="https://unpkg.com/monaco-editor@0.44.0/min/vs/loader.js"></script>
     <script src="/static/script.js"></script>
+    
 </body>
 </html>
