@@ -66,14 +66,14 @@ http://localhost:8000
 ## Images
 
 ### Bare Post method in the backend
-[img](img/3.png)
+![img](img/3.png)
 
 ### Bare Get method in the backend
-[img](img/4.png)
+![img](img/4.png)
 
 ### Starting run UI
-[img](img/1.png)
+![img](img/1.png)
 
 ### Sample execution UI
-[img](img/2.png)
+![img](img/2.png)
 
