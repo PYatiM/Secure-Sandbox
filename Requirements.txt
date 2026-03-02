@@ -1,0 +1,10 @@
+docker
+docker-compose
+flask
+flask-cors
+gunicorn
+psutil
+redis
+requests
+sqlalchemy
+sqlalchemy-utils
