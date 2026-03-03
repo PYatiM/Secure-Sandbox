@@ -12,16 +12,12 @@ def execute_python(code: str, user_input: str = "", timeout: int = 3):
         mount_path = tmpdir.replace("\\", "/")
         
         code_path = os.path.join(tmpdir, "user_code.py")
-        input_path = os.path.join(tmpdir, "input.txt")
 
         with open(code_path, "w") as f:
             f.write(code)
 
         if user_input and not user_input.endswith("\n"):
             user_input += "\n"
-           
-        with open(input_path, "w") as f:
-                f.write(user_input) 
           
         start = time.time()
 
@@ -30,6 +26,7 @@ def execute_python(code: str, user_input: str = "", timeout: int = 3):
                 [
                     "docker", "run",
                     "--rm",
+                    "-i",
                     "--name", container_name,
                     "--memory=100m",
                     "--cpus=1",
@@ -37,8 +34,7 @@ def execute_python(code: str, user_input: str = "", timeout: int = 3):
                     "--pids-limit=64",
                     "-v", f"{mount_path}:/workspace",
                     "sandbox_runtime",
-                    "sh", "-c",
-                    "python3 /workspace/user_code.py < /workspace/input.txt"
+                    "python3", "/workspace/user_code.py"
                 ],
                 input=user_input,
                 capture_output=True,
