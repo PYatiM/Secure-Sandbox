@@ -13,8 +13,9 @@ require(['vs/editor/editor.main'], function () {
 
 async function runCode() {
     const status = document.getElementById("status");
-    const code = editor.getValue();  // ← FIXED (Monaco value)
-
+    const code = editor.getValue(); 
+    const userInput = document.getElementById("stdinInput").value; 
+    
     status.textContent = "Running...";
     status.className = "status running";
 
@@ -28,7 +29,7 @@ async function runCode() {
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({ code })
+            body: JSON.stringify({ code, input: userInput })
         });
 
         const result = await response.json();

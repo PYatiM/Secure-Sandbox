@@ -28,7 +28,8 @@ semaphore = asyncio.Semaphore(MAX_CONCURRENT_EXECUTIONS)
 
 class CodeRequest(BaseModel):
     code: str
-
+    input: str | None = ""
+    
 @app.post("/execute")
 async def run_code(request: CodeRequest, req: Request):
     client_ip = req.client.host
@@ -41,7 +42,8 @@ async def run_code(request: CodeRequest, req: Request):
         result = await loop.run_in_executor(
             None,
             execute_python,
-            request.code
+            request.code,
+            request.input
         )
         return result
 

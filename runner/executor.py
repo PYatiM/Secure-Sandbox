@@ -1,21 +1,28 @@
 import subprocess
 import tempfile
 import os
-import sys
 import time
-import json
 import uuid
 
 
-def execute_python(code: str, timeout: int = 3):
+def execute_python(code: str, user_input: str = "", timeout: int = 3):
     container_name = f"sandbox_{uuid.uuid4().hex}"
 
     with tempfile.TemporaryDirectory() as tmpdir:
-        file_path = os.path.join(tmpdir, "user_code.py")
+        mount_path = tmpdir.replace("\\", "/")
+        
+        code_path = os.path.join(tmpdir, "user_code.py")
+        input_path = os.path.join(tmpdir, "input.txt")
 
-        with open(file_path, "w") as f:
+        with open(code_path, "w") as f:
             f.write(code)
 
+        if user_input and not user_input.endswith("\n"):
+            user_input += "\n"
+           
+        with open(input_path, "w") as f:
+                f.write(user_input) 
+          
         start = time.time()
 
         try:
@@ -28,29 +35,43 @@ def execute_python(code: str, timeout: int = 3):
                     "--cpus=1",
                     "--network=none",
                     "--pids-limit=64",
-                    "--read-only",
-                    "--tmpfs", "/tmp",
-                    "-v", f"{tmpdir}:/sandbox:ro",
-                    "sandbox_runtime"
+                    "-v", f"{mount_path}:/workspace",
+                    "sandbox_runtime",
+                    "sh", "-c",
+                    "python3 /workspace/user_code.py < /workspace/input.txt"
                 ],
+                input=user_input,
                 capture_output=True,
                 text=True,
                 timeout=timeout
             )
-
             end = time.time()
-
             return {
                 "stdout": result.stdout,
                 "stderr": result.stderr,
                 "returncode": result.returncode,
                 "execution_time": round(end - start, 4)
             }
+            
 
         except subprocess.TimeoutExpired:
-            subprocess.run(["docker", "kill", container_name])
+            subprocess.run(
+                ["docker", "kill", container_name],
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL
+            )
+
             return {
                 "stdout": "",
                 "stderr": "Execution timed out",
-                "returncode": -1
+                "returncode": -1,
+                "execution_time": timeout
+            }
+            
+        except Exception as e:
+            return {
+                "stdout": "",
+                "stderr": f"Error executing code: {str(e)}",
+                "returncode": -1,
+                "execution_time": 0
             }

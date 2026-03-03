@@ -1,8 +1,5 @@
 FROM python:3.12-slim
 
-WORKDIR /sandbox
+WORKDIR /
 
-RUN useradd -m sandboxuser
-USER sandboxuser
-
-CMD ["python3", "/sandbox/user_code.py"]
+CMD ["sleep", "infinity"]
