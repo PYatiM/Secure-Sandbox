@@ -1,3 +1,6 @@
+# not used anywhere, its a fallback code for non_docker local execution model
+# since docker already handles memory and cpu flags
+
 import os
 
 if os.name != "nt":
