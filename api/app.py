@@ -10,11 +10,23 @@ from slowapi.util import get_remote_address
 import time
 import asyncio
 
-
 RATE_LIMIT = 10  # Max requests per minute
 WINDOW_SECONDS = 60
 requests_log = defaultdict(list)
 limiter = Limiter(key_func=get_remote_address)
+MAX_OUTPUT_SIZE = 100 * 1024 # 100KB
+
+def sanitize_output(text:str) -> str:
+    if not text:
+        return ""
+    
+    if len(text) > MAX_OUTPUT_SIZE:
+        text = text[:MAX_OUTPUT_SIZE] + "\n... [output truncated]" # if output too large
+
+    #strip ansi escape sequences
+    import re
+    ansi_escape = re.compile(r'\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])')
+    return ansi_escape.sub('',text)
 
 def is_rate_limited(client_ip):
     now = time.time()
@@ -51,6 +63,12 @@ async def run_code(request: CodeRequest, req: Request):
             request.input
         )
         return result
+    return {
+        "stdout": sanitize_output(result["stdout"]),
+        "stderr": sanitize_output(result["stderr"]),
+        "returncode": sanitize_output(result["returncode"]),
+        "execution_time": sanitize_output(result["execution_time"])
+    }
 
 @app.get("/")
 def serve_ui():
