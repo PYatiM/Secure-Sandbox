@@ -14,6 +14,10 @@ require(['vs/editor/editor.main'], function () {
 async function runCode() {
     const status = document.getElementById("status");
     const code = editor.getValue(); 
+    if (code.length > 65536){
+        document.getElementById("stderr").textContent = "Code too large (max 64KB)";
+        return;
+    }
     const userInput = document.getElementById("stdinInput").value; 
     
     status.textContent = "Running...";
