@@ -6,9 +6,17 @@ import uuid
 import stat
 from security.validator import validate_code
 
-
+MAX_CODE_SIZE = 64 * 1024 #64KB to prevent large code insertion and process slowdown
 
 def execute_python(code: str, user_input: str = "", timeout: int = 3):
+    if len(code.encode("utf-8")) -> MAX_CODE_SIZE:
+        return {
+            "stdout": "",
+            "stderr": "Code Size exceeds maximum allowed limit (64KB)",
+            "returncode": -1,
+            "execution_time": 0
+        }
+    
     is_valid, reason = validate_code(code)
     if not is_valid:
         return {
