@@ -3,9 +3,18 @@ import tempfile
 import os
 import time
 import uuid
-
+from security.validator import validate_code
 
 def execute_python(code: str, user_input: str = "", timeout: int = 3):
+    is_valid, reason = validate_code(code)
+    if not is_valid:
+        return {
+            "stdout": "",
+            "stderr":f"Rejected: {reason}",
+            "returncode": -1,
+            "execution_time": 0
+        }
+    
     container_name = f"sandbox_{uuid.uuid4().hex}"
 
     with tempfile.TemporaryDirectory() as tmpdir:
