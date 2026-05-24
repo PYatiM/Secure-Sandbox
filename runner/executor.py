@@ -3,7 +3,10 @@ import tempfile
 import os
 import time
 import uuid
+import stat
 from security.validator import validate_code
+
+
 
 def execute_python(code: str, user_input: str = "", timeout: int = 3):
     is_valid, reason = validate_code(code)
@@ -24,6 +27,7 @@ def execute_python(code: str, user_input: str = "", timeout: int = 3):
 
         with open(code_path, "w") as f:
             f.write(code)
+        os.chmod(code_path,stat.S_IRUSER | stat.S_IWUSR)
 
         if user_input and not user_input.endswith("\n"):
             user_input += "\n"
