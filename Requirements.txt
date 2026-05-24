@@ -1,10 +1,4 @@
 docker
-docker-compose
-flask
-flask-cors
-gunicorn
-psutil
-redis
-requests
-sqlalchemy
-sqlalchemy-utils
+fastapi
+pydantic
+uvicorn[standard]
