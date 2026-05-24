@@ -1,5 +1,17 @@
 FROM python:3.12-slim
 
-WORKDIR /
+RUN useradd -m -s /bin/false sandboxuser
 
-CMD ["sleep", "infinity"]
+# Remove tools that have no business being in an execution sandbox
+RUN apt-get update && apt-get remove -y \
+    curl wget netcat-traditional nc \
+    && apt-get autoremove -y \
+    && rm -rf /var/lib/apt/lists/*
+
+# Pre-create the workspace directory with correct ownership
+RUN mkdir /workspace && chown sandboxuser:sandboxuser /workspace
+
+WORKDIR /workspace
+
+# Switch to non-root
+USER sandboxuser
