@@ -5,12 +5,16 @@ from runner.executor import execute_python
 from collections import defaultdict
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
+from slowapi import Limiter
+from slowapi.util import get_remote_address
 import time
 import asyncio
+
 
 RATE_LIMIT = 10  # Max requests per minute
 WINDOW_SECONDS = 60
 requests_log = defaultdict(list)
+limiter = Limiter(key_func=get_remote_address)
 
 def is_rate_limited(client_ip):
     now = time.time()
@@ -31,6 +35,7 @@ class CodeRequest(BaseModel):
     input: str | None = ""
     
 @app.post("/execute")
+@limiter.limit("10/minute")
 async def run_code(request: CodeRequest, req: Request):
     client_ip = req.client.host
 
