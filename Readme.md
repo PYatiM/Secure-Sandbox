@@ -8,6 +8,25 @@ Whats different is that it enforces CPU limit, Memory limit, No file system acce
 
 -> Designed a containerized secure execution engine with enforced CPU/memory constraints, syscall restriction awareness, and network isolation to mitigate RCE and fork bomb attacks.
 
+## Whats UNSAFE code and how does it "Sanitize it"
+
+    A code is deemed unsafe when it tends to break the flow of operations of the program and intends to corrupt or gain access to the source.
+
+    how does it Sanitize it:
+        Blocks every unsafe keywords and operations from the source code by checking for them from a list of pre coded checklist
+        Even if there is a bypass the sandbox nature ensures the code doesnt affect the entire projects is onlya limited impact
+        It ensure usage of safe coding methods and practices
+
+## Fork Bomb attacks and its mitigation
+
+    Fork bombing is the act of spawning child processes recursively until the system runs out of process ids (pid)
+
+    The sandbox counter it with the Dockers 
+    --pid-linit
+    flag, which caps the total number of process the container can have. 
+    When the limit is hit fork() fails with EAGAIN - the bomb exhausts itself without touching the host pids namespace.
+    Hence the container gets killed or stalls, returning an error to the user
+
 ## How to Run
 
 Follow these instructions to set up and run the Secure Sandbox environment on your local machine.
