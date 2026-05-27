@@ -4,7 +4,8 @@ RUN useradd -m -s /bin/false sandboxuser
 
 # Remove tools that have no business being in an execution sandbox
 RUN apt-get update && apt-get remove -y \
-    curl wget netcat-traditional nc \
+    curl \
+    wget \
     && apt-get autoremove -y \
     && rm -rf /var/lib/apt/lists/*
 
